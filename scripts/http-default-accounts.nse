@@ -40,7 +40,7 @@ credentials are found). With increased verbosity (option -v), the script will
 also report all matching fingerprints.
 
 Please help improve this script by adding new entries to
-nselib/data/http-default-accounts.lua
+nselib/data/http-default-accounts-fingerprints.lua
 
 Remember each fingerprint must have:
 * <code>name</code> - Descriptive name
@@ -109,21 +109,25 @@ This script was based on http-enum.
 -- 2014-04-27
 --   * changed category from safe to intrusive
 -- 2016-08-10 nnposter
---   * added sharing of probe requests across fingerprints
+--   * Share probe requests across fingerprints
 -- 2016-10-30 nnposter
---   * removed a limitation that prevented testing of systems returning
+--   * Rectify a limitation that prevented testing of systems returning
 --     status 200 for non-existent pages.
 -- 2016-12-01 nnposter
---   * implemented XML structured output
---   * changed classic output to report empty credentials as <blank>
+--   * Implement XML structured output
+--   * Change classic output to report empty credentials as <blank>
 -- 2016-12-04 nnposter
---   * added CPE entries to individual fingerprints (where known)
+--   * Add CPE entries to individual fingerprints (where known)
 -- 2018-12-17 nnposter
---   * added ability to select fingerprints by their name
+--   * Add ability to select fingerprints by their name
 -- 2020-07-11 nnposter
---   * added reporting of all matched fingerprints when verbosity is increased
+--   * Report all matched fingerprints when verbosity is increased
 -- 2025-11-12 nnposter
---   * added enforcement of mandatory fingerprint elements
+--   * Enforce mandatory fingerprint elements
+--   * Stop testing of passwords as soon as the correct password for a given
+--     username is found
+--   * The default target_check function is now only built when some
+--     of the loaded fingerprints lack their own.
 ---
 
 author = {"Paulino Calderon <calderon@websec.mx>", "nnposter"}
@@ -384,7 +388,7 @@ local function load_fingerprints(filename, catlist, namelist)
 end
 
 ---
--- Generates a default target_check function, which will be used with
+-- Generates the default target_check function, which will be used with
 -- fingerprints that lack their own. This default check is just testing
 -- for existence of the probe path on the target.
 -- @param host table as received by the scripts action method
